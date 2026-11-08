@@ -1,0 +1,610 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="theme-color" content="#101315">
+
+    <meta name="description" content="PayShield AI helps you understand payment terms, hidden charges, recurring billing and commitments before checkout.">
+
+    <title>PayShield AI — Trust Lens</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- NAVIGATION -->
+
+    <nav class="navbar">
+
+        <a class="brand" href="#" aria-label="PayShield AI home">
+
+            <span class="brand-icon">◈</span>
+
+            PayShield<span class="brand-ai">AI</span>
+
+        </a>
+
+        <div class="nav-center">
+            PAYMENT INTELLIGENCE
+        </div>
+
+        <div class="nav-right">
+
+            <span class="secure-dot"></span>
+
+            PAYMENT INTELLIGENCE
+
+        </div>
+
+    </nav>
+
+
+    <main>
+
+        <!-- HERO SECTION -->
+
+        <section class="hero">
+
+            <div class="eyebrow">
+                A NEW WAY TO LOOK AT PAYMENTS
+            </div>
+
+            <h1>
+                Before you pay,<br>
+                see the <span>whole picture.</span>
+            </h1>
+
+            <p>
+                Every payment has a story. Discover charges, renewals and commitments hiding behind the checkout button.
+            </p>
+
+            <div class="hero-note">
+
+                <span>✳</span>
+
+                Understand the commitment. Own the decision.
+
+            </div>
+
+        </section>
+
+
+        <!-- PAYMENT WORKSPACE -->
+
+        <section class="workspace">
+
+            <!-- PAYMENT INPUT PANEL -->
+
+            <div class="input-panel">
+
+                <div class="panel-heading">
+
+                    <div>
+
+                        <span class="section-label">
+                            01 — YOUR PAYMENT
+                        </span>
+
+                        <h2>Let's look closer.</h2>
+
+                        <p>
+                            Tell us what you're about to pay for.
+                        </p>
+
+                    </div>
+
+                    <span class="heading-symbol">✳</span>
+
+                </div>
+
+
+                <!-- PAYMENT TYPE -->
+
+                <label class="field-title">
+                    Choose your payment type
+                </label>
+
+                <div class="payment-types">
+
+                    <label class="type-option">
+
+                        <input
+                            type="radio"
+                            name="paymentType"
+                            value="One-time payment"
+                            checked
+                        >
+
+                        <span class="type-card">
+
+                            <span class="type-icon">◉</span>
+
+                            <b>One-time</b>
+
+                            <small>Pay once</small>
+
+                        </span>
+
+                    </label>
+
+
+                    <label class="type-option">
+
+                        <input
+                            type="radio"
+                            name="paymentType"
+                            value="Subscription"
+                        >
+
+                        <span class="type-card">
+
+                            <span class="type-icon">↻</span>
+
+                            <b>Subscription</b>
+
+                            <small>Pay regularly</small>
+
+                        </span>
+
+                    </label>
+
+
+                    <label class="type-option">
+
+                        <input
+                            type="radio"
+                            name="paymentType"
+                            value="Free trial"
+                        >
+
+                        <span class="type-card">
+
+                            <span class="type-icon">✧</span>
+
+                            <b>Free trial</b>
+
+                            <small>Try before paying</small>
+
+                        </span>
+
+                    </label>
+
+
+                    <label class="type-option">
+
+                        <input
+                            type="radio"
+                            name="paymentType"
+                            value="Online purchase"
+                        >
+
+                        <span class="type-card">
+
+                            <span class="type-icon">◇</span>
+
+                            <b>Online purchase</b>
+
+                            <small>Buy something</small>
+
+                        </span>
+
+                    </label>
+
+                </div>
+
+
+                <!-- PAYMENT FREQUENCY -->
+
+                <label class="field-title">
+                    How often will you be charged?
+                </label>
+
+                <div class="choice-row">
+
+                    <label>
+                        <input type="radio" name="frequency" value="One-time" checked>
+                        One-time
+                    </label>
+
+                    <label>
+                        <input type="radio" name="frequency" value="Weekly">
+                        Weekly
+                    </label>
+
+                    <label>
+                        <input type="radio" name="frequency" value="Monthly">
+                        Monthly
+                    </label>
+
+                    <label>
+                        <input type="radio" name="frequency" value="Yearly">
+                        Yearly
+                    </label>
+
+                    <label>
+                        <input type="radio" name="frequency" value="Not sure">
+                        Not sure
+                    </label>
+
+                </div>
+
+
+                <!-- AMOUNT DETAILS -->
+
+                <div class="amount-grid">
+
+                    <div>
+
+                        <label for="expected">
+                            Expected amount (₹)
+                        </label>
+
+                        <input
+                            type="number"
+                            id="expected"
+                            min="0.01"
+                            max="1000000000"
+                            step="0.01"
+                            inputmode="decimal"
+                            placeholder="499"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div>
+
+                        <label for="amount">
+                            Actual charge (₹)
+                        </label>
+
+                        <input
+                            type="number"
+                            id="amount"
+                            min="0.01"
+                            max="1000000000"
+                            step="0.01"
+                            inputmode="decimal"
+                            placeholder="799"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+                <p class="field-hint">
+                    Enter the amount you expected and the amount shown at checkout.
+                </p>
+
+
+                <!-- FREE TRIAL -->
+
+                <label class="field-title">
+                    Does it include a free trial?
+                </label>
+
+                <div class="choice-row">
+
+                    <label>
+                        <input type="radio" name="trial" value="Yes">
+                        Yes
+                    </label>
+
+                    <label>
+                        <input type="radio" name="trial" value="No" checked>
+                        No
+                    </label>
+
+                    <label>
+                        <input type="radio" name="trial" value="Not sure">
+                        Not sure
+                    </label>
+
+                </div>
+
+
+                <!-- REFUND POLICY -->
+
+                <label class="field-title">
+                    What is the refund policy?
+                </label>
+
+                <div class="choice-row">
+
+                    <label>
+                        <input type="radio" name="refund" value="Refundable" checked>
+                        Refundable
+                    </label>
+
+                    <label>
+                        <input type="radio" name="refund" value="Non-refundable">
+                        Non-refundable
+                    </label>
+
+                    <label>
+                        <input type="radio" name="refund" value="Not sure">
+                        Not sure
+                    </label>
+
+                </div>
+
+
+                <!-- PAYMENT PURPOSE -->
+
+                <label for="purpose">
+                    What are you paying for?
+                </label>
+
+                <input
+                    type="text"
+                    id="purpose"
+                    maxlength="120"
+                    placeholder="e.g. Music streaming plan"
+                    required
+                >
+
+
+                <!-- PAYMENT TERMS -->
+
+                <label for="terms">
+                    Original payment terms
+                </label>
+
+                <textarea
+                    id="terms"
+                    maxlength="10000"
+                    placeholder="Paste checkout terms, subscription conditions, renewal details or refund policy here..."
+                    required
+                ></textarea>
+
+                <p class="field-hint">
+                    Maximum 10,000 characters. Avoid pasting passwords, card numbers or other sensitive information.
+                </p>
+
+
+                <!-- ANALYZE BUTTON -->
+
+                <button id="analyzeButton" type="button">
+                    Reveal my payment <span>↗</span>
+                </button>
+
+                <p class="privacy-note">
+                    ◈ Analysis only. This tool does not authorize or make payments.
+                </p>
+
+            </div>
+
+
+            <!-- PAYMENT X-RAY PANEL -->
+
+            <aside class="xray-panel">
+
+                <div class="xray-top">
+
+                    <span class="section-label">
+                        LIVE PAYMENT X-RAY
+                    </span>
+
+                    <span class="live-indicator">
+                        <i></i> PREVIEW
+                    </span>
+
+                </div>
+
+
+                <div class="payment-visual">
+
+                    <div class="visual-orb orb-one"></div>
+
+                    <div class="visual-orb orb-two"></div>
+
+
+                    <div class="visual-content">
+
+                        <div class="visual-card-top">
+
+                            <span>◈ PAYSHIELD</span>
+
+                            <span class="visual-chip">✳</span>
+
+                        </div>
+
+
+                        <div class="visual-caption">
+                            YOUR PAYMENT COMMITMENT
+                        </div>
+
+
+                        <div class="visual-amount">
+                            ₹<span id="previewAmount">0</span>
+                        </div>
+
+
+                        <div class="visual-purpose" id="previewPurpose">
+                            Your purchase will appear here
+                        </div>
+
+
+                        <div class="visual-divider"></div>
+
+
+                        <div class="visual-bottom">
+
+                            <span id="previewType">
+                                ONE-TIME PAYMENT
+                            </span>
+
+                            <span id="previewFrequency">
+                                ONE-TIME
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- PAYMENT TIMELINE -->
+
+                <div class="timeline-heading">
+
+                    <span class="section-label">
+                        THE COMMITMENT TIMELINE
+                    </span>
+
+                    <p>
+                        What could happen after checkout?
+                    </p>
+
+                </div>
+
+
+                <div class="timeline" id="timeline" aria-live="polite">
+
+                    <div class="timeline-item">
+
+                        <span class="timeline-dot"></span>
+
+                        <div>
+
+                            <b>Today</b>
+
+                            <p>Your initial payment</p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="timeline-item">
+
+                        <span class="timeline-dot muted-dot"></span>
+
+                        <div>
+
+                            <b>After checkout</b>
+
+                            <p>Conditions will be examined</p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="xray-note">
+
+                    <span>✦</span>
+
+                    <p>
+                        <b>Look beyond the price.</b><br>
+                        A payment is more than the amount shown at checkout.
+                    </p>
+
+                </div>
+
+            </aside>
+
+        </section>
+
+
+        <!-- TRUST LENS REPORT -->
+
+        <section class="report-panel">
+
+            <div class="report-heading">
+
+                <div>
+
+                    <span class="section-label">
+                        02 — THE TRUST LENS
+                    </span>
+
+                    <h2>What did we uncover?</h2>
+
+                    <p>
+                        Your payment analysis will appear here.
+                    </p>
+
+                </div>
+
+                <div class="report-icon">
+                    ⌕
+                </div>
+
+            </div>
+
+
+            <div id="result" aria-live="polite" aria-atomic="false">
+
+                <div class="report-empty">
+
+                    <div class="empty-symbol">
+                        ◈
+                    </div>
+
+                    <h3>
+                        Your payment is waiting to be examined.
+                    </h3>
+
+                    <p>
+                        Complete the details and select "Reveal my payment" to begin.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- DISCLAIMER -->
+
+        <div class="disclaimer">
+
+            <b>Important:</b>
+
+            PayShield AI currently performs rule-based checks on the information you provide. It cannot verify the merchant, independently confirm the original terms, or guarantee that a payment is safe.
+
+        </div>
+
+
+        <!-- FOOTER -->
+
+        <footer>
+
+            <span class="footer-brand">
+                ◈ PayShield AI
+            </span>
+
+            <span>
+                Understand the commitment. Own the decision.
+            </span>
+
+        </footer>
+
+    </main>
+
+
+    <!-- JAVASCRIPT -->
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>
+
