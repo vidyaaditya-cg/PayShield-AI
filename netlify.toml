@@ -2,3 +2,14 @@
   # The static site lives in this subfolder, not the repository root.
   publish = "pay sheild-ai"
   command = ""
+
+# Old links that included the folder name now point at the site root.
+[[redirects]]
+  from = "/pay%20sheild-ai/*"
+  to = "/:splat"
+  status = 301
+
+[[redirects]]
+  from = "/pay sheild-ai/*"
+  to = "/:splat"
+  status = 301
