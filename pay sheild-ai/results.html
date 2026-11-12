@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PayShield AI | Risk Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="results-body">
+
+    <nav class="navbar">
+        <a class="brand" href="index.html">
+            <span class="brand-icon">P</span>
+            <span>PayShield<span class="brand-ai"> AI</span></span>
+        </a>
+
+        <div class="nav-right">
+            <span class="nav-status"><span class="status-dot"></span> Analysis complete</span>
+            <button id="logoutButton" class="text-button" type="button">Sign out</button>
+        </div>
+    </nav>
+
+    <main class="results-container">
+
+        <div class="results-top">
+            <div>
+                <p class="eyebrow">PAYMENT INTELLIGENCE / REPORT</p>
+                <h1>Your payment,<br><span>under the microscope.</span></h1>
+                <p class="muted">Your payment risk assessment and detailed findings.</p>
+            </div>
+            <a class="secondary-button" href="index.html">← New analysis</a>
+        </div>
+
+        <section id="reportContent">
+            <div class="loading-card">
+                <div class="loader"></div>
+                <p>Loading your payment analysis...</p>
+            </div>
+        </section>
+
+        <div class="results-actions">
+            <a href="index.html" class="primary-button">Analyse another payment →</a>
+        </div>
+
+        <p class="disclaimer">
+            PayShield AI provides AI-assisted information, not a guarantee that a transaction is safe or unsafe.
+            Always review the merchant's original terms before paying.
+        </p>
+
+    </main>
+
+    <script>
+        // Require demo login
+        if (sessionStorage.getItem("payshieldLoggedIn") !== "true") {
+            window.location.href = "index.html";
+        }
+
+        document.getElementById("logoutButton").addEventListener("click", () => {
+            sessionStorage.removeItem("payshieldLoggedIn");
+            sessionStorage.removeItem("payshieldReport");
+            window.location.href = "index.html";
+        });
+
+        function escapeHTML(value) {
+            return String(value ?? "").replace(/[&<>"']/g, char => ({
+                "&": "&amp;",
+                "<": "&lt;",
+                ">": "&gt;",
+                '"': "&quot;",
+                "'": "&#039;"
+            })[char]);
+        }
+
+        function normaliseFinding(item) {
+            if (typeof item === "string") {
+                return { text: item, severity: "warning" };
+            }
+
+            return {
+                text: item?.message || item?.description || item?.finding || JSON.stringify(item),
+                severity: String(item?.severity || item?.type || "warning").toLowerCase()
+            };
+        }
+
+        function getFindingClass(finding) {
+            const severity = finding.severity;
+            const text = finding.text.toLowerCase();
+
+            if (
+                severity.includes("positive") ||
+                severity.includes("good") ||
+                severity.includes("success") ||
+                severity.includes("low") ||
+                severity.includes("info") ||
+                text.includes("no hidden") ||
+                text.includes("no extra") ||
+                text.includes("no recurring") ||
+                text.includes("clearly stated") ||
+                text.includes("refundable")
+            ) {
+                return "finding-good";
+            }
+
+            if (
+                severity.includes("missing") ||
+                severity.includes("uncertain") ||
+                severity.includes("medium") ||
+                severity.includes("caution")
+            ) {
+                return "finding-caution";
+            }
+
+            return "finding-bad";
+        }
+
+        // Categorise actual findings for the graph.
+        // These are counts of matching findings, not independent risk scores.
+        const riskCategories = [
+            {
+                name: "Recurring billing",
+                icon: "↻",
+                keywords: ["recurring", "renew", "monthly", "subscription", "weekly", "yearly", "auto-renew"]
+            },
+            {
+                name: "Trial conversion",
+                icon: "◷",
+                keywords: ["trial", "free trial", "after trial", "convert"]
+            },
+            {
+                name: "Refund restrictions",
+                icon: "↩",
+                keywords: ["refund", "non-refundable", "no refund", "refund policy"]
+            },
+            {
+                name: "Cancellation",
+                icon: "×",
+                keywords: ["cancel", "cancellation", "notice period", "terminate"]
+            },
+            {
+                name: "Extra fees",
+                icon: "₹",
+                keywords: ["fee", "tax", "additional", "extra charge", "price increase", "price change"]
+            }
+        ];
+
+        function buildRiskGraph(findings) {
+            const counts = riskCategories.map(category => {
+                const matching = findings.filter(finding => {
+                    const text = finding.text.toLowerCase();
+                    return category.keywords.some(keyword => text.includes(keyword));
+                });
+
+                return {
+                    ...category,
+                    count: matching.length
+                };
+            });
+
+            const maximum = Math.max(1, ...counts.map(item => item.count));
+
+            return `
+                <section class="report-section">
+                    <div class="section-title">
+                        <span>02</span>
+                        <h2>Risk signal breakdown</h2>
+                    </div>
+
+                    <div class="graph-card">
+                        <div class="graph-heading">
+                            <div>
+                                <p class="eyebrow">PAYMENT TERMS ANALYTICS</p>
+                                <h3>Where are the concerns?</h3>
+                            </div>
+                            <span class="graph-tag">LIVE FINDINGS</span>
+                        </div>
+
+                        <div class="risk-graph">
+                            ${counts.map(item => {
+                                const width = item.count === 0
+                                    ? 0
+                                    : Math.max(5, item.count / maximum * 100);
+
+                                return `
+                                    <div class="graph-row">
+                                        <div class="graph-label">
+                                            <span>${item.icon} ${escapeHTML(item.name)}</span>
+                                            <strong>${item.count}</strong>
+                                        </div>
+                                        <div class="graph-track">
+                                            <div class="graph-bar" style="width:${width}%"></div>
+                                        </div>
+                                    </div>
+                                `;
+                            }).join("")}
+                        </div>
+
+                        <p class="graph-note">
+                            Bars show the number of supplied findings matching each category.
+                            One finding may appear in more than one category.
+                        </p>
+                    </div>
+                </section>
+            `;
+        }
+
+        function renderReport() {
+            const reportText = sessionStorage.getItem("payshieldReport");
+            const container = document.getElementById("reportContent");
+
+            if (!reportText) {
+                container.innerHTML = `
+                    <div class="empty-report">
+                        <h2>No report found</h2>
+                        <p>Go back and analyse a payment first.</p>
+                        <a class="primary-button" href="index.html">Back to payment details →</a>
+                    </div>`;
+                return;
+            }
+
+            let report;
+
+            try {
+                report = JSON.parse(reportText);
+            } catch {
+                container.innerHTML = "<p>Could not read the saved report. Please analyse again.</p>";
+                return;
+            }
+
+            const ai = report.ai_analysis || {};
+            const payment = report.payment || {};
+            const warnings = Array.isArray(report.warnings) ? report.warnings : [];
+            const aiFindings = Array.isArray(ai.findings) ? ai.findings : [];
+            const missing = Array.isArray(ai.missing_information) ? ai.missing_information : [];
+
+            const combined = [
+                ...aiFindings.map(normaliseFinding),
+                ...warnings.map(normaliseFinding)
+            ];
+
+            const seen = new Set();
+            const findings = combined.filter(item => {
+                const key = item.text.trim().toLowerCase();
+                if (!key || seen.has(key)) return false;
+                seen.add(key);
+                return true;
+            });
+
+            const fallbackScore = findings.length
+                ? Math.min(90, 25 + findings.length * 12)
+                : 10;
+
+            const score = Math.max(
+                0,
+                Math.min(100, Number(ai.risk_score ?? fallbackScore))
+            );
+
+            const riskLevel = String(
+                ai.risk_level ||
+                (score >= 65 ? "High" : score >= 35 ? "Medium" : "Low")
+            );
+
+            const riskClass = riskLevel.toLowerCase().includes("high")
+                ? "risk-high"
+                : riskLevel.toLowerCase().includes("medium")
+                    ? "risk-medium"
+                    : "risk-low";
+
+            const gaugeColor = riskClass === "risk-high"
+                ? "#ff727d"
+                : riskClass === "risk-medium"
+                    ? "#f2cf70"
+                    : "#69d8ba";
+
+            const summary = ai.payment_summary ||
+                "Review the findings below to understand this payment's terms.";
+
+            const recommendation = ai.recommendation ||
+                "Review the merchant's terms carefully before confirming the payment.";
+
+            const findingsHTML = findings.length
+                ? findings.map(item => {
+                    const cssClass = getFindingClass(item);
+
+                    const label = cssClass === "finding-good"
+                        ? "POSITIVE SIGNAL"
+                        : cssClass === "finding-caution"
+                            ? "CHECK THIS"
+                            : "WARNING";
+
+                    return `
+                        <div class="finding-card ${cssClass}">
+                            <span class="finding-label">${label}</span>
+                            <p>${escapeHTML(item.text)}</p>
+                        </div>`;
+                }).join("")
+                : `
+                    <div class="finding-card finding-good">
+                        <span class="finding-label">NO RULES TRIGGERED</span>
+                        <p>No obvious warning was detected by the initial checks. This does not guarantee that the payment is safe.</p>
+                    </div>`;
+
+            const missingHTML = missing.length
+                ? `
+                    <section class="report-section">
+                        <div class="section-title">
+                            <span>04</span>
+                            <h2>Information to confirm</h2>
+                        </div>
+                        <div class="finding-list">
+                            ${missing.map(item => `
+                                <div class="finding-card finding-caution">
+                                    <span class="finding-label">MISSING INFORMATION</span>
+                                    <p>${escapeHTML(
+                                        typeof item === "string"
+                                            ? item
+                                            : item.message || JSON.stringify(item)
+                                    )}</p>
+                                </div>
+                            `).join("")}
+                        </div>
+                    </section>`
+                : "";
+
+            container.innerHTML = `
+                <section class="report-summary">
+
+                    <div class="risk-overview">
+                        <div class="risk-heading">
+                            <div>
+                                <p class="eyebrow">OVERALL RISK ASSESSMENT</p>
+                                <h2 class="${riskClass}">${escapeHTML(riskLevel)} Risk</h2>
+                            </div>
+                        </div>
+
+                        <div class="gauge-layout">
+                            <div class="risk-gauge ${riskClass}"
+                                style="--score-angle:${score * 3.6}deg; --gauge-color:${gaugeColor}">
+                                <div class="gauge-inner">
+                                    <strong>${score}</strong>
+                                    <span>OUT OF 100</span>
+                                </div>
+                            </div>
+
+                            <div class="gauge-description">
+                                <strong>${escapeHTML(riskLevel)} risk detected</strong>
+                                <p>Based on the payment details and terms submitted for analysis.</p>
+                            </div>
+                        </div>
+
+                        <div class="risk-meter">
+                            <div class="risk-meter-track">
+                                <div class="risk-meter-fill ${riskClass}"
+                                    style="width:${score}%"></div>
+                            </div>
+                            <div class="meter-labels">
+                                <span>LOW</span>
+                                <span>MEDIUM</span>
+                                <span>HIGH</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="summary-box">
+                        <p class="eyebrow">AI PAYMENT SUMMARY</p>
+                        <p>${escapeHTML(summary)}</p>
+                    </div>
+
+                </section>
+
+                <section class="payment-facts">
+                    <div>
+                        <span>Purpose</span>
+                        <strong>${escapeHTML(payment.purpose || "Not provided")}</strong>
+                    </div>
+                    <div>
+                        <span>Expected amount</span>
+                        <strong>${escapeHTML(payment.expected ?? "—")}</strong>
+                    </div>
+                    <div>
+                        <span>Actual charge</span>
+                        <strong>${escapeHTML(payment.amount ?? "—")}</strong>
+                    </div>
+                    <div>
+                        <span>Frequency</span>
+                        <strong>${escapeHTML(payment.frequency || "—")}</strong>
+                    </div>
+                    <div>
+                        <span>Payment type</span>
+                        <strong>${escapeHTML(payment.paymentType || "—")}</strong>
+                    </div>
+                    <div>
+                        <span>Free trial</span>
+                        <strong>${escapeHTML(payment.trial || "—")}</strong>
+                    </div>
+                </section>
+
+                <section class="report-section">
+                    <div class="section-title">
+                        <span>01</span>
+                        <h2>What PayShield found</h2>
+                    </div>
+                    <div class="finding-list">${findingsHTML}</div>
+                </section>
+
+                ${buildRiskGraph(findings)}
+
+                ${missingHTML}
+
+                <section class="recommendation-card">
+                    <p class="eyebrow">PAYSHIELD RECOMMENDATION</p>
+                    <h2>Before you make a decision</h2>
+                    <p>${escapeHTML(recommendation)}</p>
+                </section>
+
+                <p class="analysis-meta">
+                    Analysis mode: ${escapeHTML(report.analysis_type || "Rule-based")}
+                    · AI connection: ${report.ai_available ? "Connected" : "Fallback mode"}
+                </p>
+            `;
+        }
+
+        renderReport();
+    </script>
+</body>
+</html>
